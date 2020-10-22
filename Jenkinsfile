@@ -1,5 +1,5 @@
 //timestamps{
-    node('nodejs'){
+    node('maven'){//nodejs
         stage('Checkout'){
             //checkout([$class: 'GitSCM', branches: [[name: '*/openshift']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/cmotta2016/PipelineScriptsBackendProject.git']]])
             checkout scm
@@ -10,9 +10,7 @@
             sh 'rm -rf teste-build.tgz > /dev/null 2>&1'
             sh 'tar czvf teste-build.tgz * --exclude node_modules'*/
 
-            sh 'mvn verify http://cicdtools.oracle.msdigital.pro:8081/repository/mvn-public'
-            sh 'mvn install'
-            sh 'rm -rf teste-build.tgz > /dev/null 2>&1'
+            sh 'mvn clean verify'
             
         }
 
