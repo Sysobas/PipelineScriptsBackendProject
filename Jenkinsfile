@@ -5,10 +5,15 @@
             checkout scm
         }
         stage('Compile'){
-            sh 'npm set registry http://cicdtools.oracle.msdigital.pro:8081/repository/npm-group'
+            /*sh 'npm set registry http://cicdtools.oracle.msdigital.pro:8081/repository/npm-group'
             sh 'npm install'
             sh 'rm -rf teste-build.tgz > /dev/null 2>&1'
-            sh 'tar czvf teste-build.tgz * --exclude node_modules'
+            sh 'tar czvf teste-build.tgz * --exclude node_modules'*/
+
+            sh 'mvn verify http://cicdtools.oracle.msdigital.pro:8081/repository/mvn-public'
+            sh 'mvn install'
+            sh 'rm -rf teste-build.tgz > /dev/null 2>&1'
+            
         }
 
         openshift.withCluster() {
