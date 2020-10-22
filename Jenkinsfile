@@ -13,21 +13,38 @@
 
         openshift.withCluster() {
             openshift.withProject("cicd") {
-                    def jobTemplate = readFile(file:'depcheck_job_scan.yaml')
-                    //openshift.delete(jobTemplate)
-                    def jobCreated = openshift.create(jobTemplate)
-                    def job = openshift.selector("job", "node-backend-v1-depcheck")
-                    timeout(5) {
-                        job.untilEach(1) {
-                            return (it.related('pods').object().status.phase != "Pending")
-                        }
-                    }
-                    job.logs('-f')
-                    def obj = job.related('pods').object()
-                    if (obj.status.phase in ["Error", "Failed", "Cancelled"]) {
-                        error(obj.toString())
+                def jobTemplate = readFile(file:'depcheck_job_scan.yaml')
+                //openshift.delete(jobTemplate)
+                def jobCreated = openshift.create(jobTemplate)
+                def job = openshift.selector("job", "node-backend-v1-depcheck")
+                timeout(5) {
+                    job.untilEach(1) {
+                        return (it.related('pods').object().status.phase != "Pending")
                     }
                 }
-        }//withCluster
-    }//node
-//}//timestamps
+                job.logs('-f')
+                def obj = job.related('pods').object()
+                if (obj.status.phase in ["Error", "Failed", "Cancelled"]) {
+                    error(obj.toString())
+                }
+            }
+
+            openshift.withProject("cicd") {
+                def jobTemplate = readFile(file:'depcheck_job_scan_maven.yaml')
+                //openshift.delete(jobTemplate)
+                def jobCreated = openshift.create(jobTemplate)
+                def job = openshift.selector("job", "maven-backend-v1-depcheck")
+                timeout(5) {
+                    job.untilEach(1) {
+                        return (it.related('pods').object().status.phase != "Pending")
+                    }
+                }
+                job.logs('-f')
+                def obj = job.related('pods').object()
+                if (obj.status.phase in ["Error", "Failed", "Cancelled"]) {
+                    error(obj.toString())
+                }
+            }
+        }
+    }
+//}
