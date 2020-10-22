@@ -12,7 +12,7 @@
         }
 
         openshift.withCluster() {
-            openshift.withProject("cicd") {
+            /*openshift.withProject("cicd") {
                 def jobTemplate = readFile(file:'depcheck_job_scan.yaml')
                 //openshift.delete(jobTemplate)
                 def jobCreated = openshift.create(jobTemplate)
@@ -27,7 +27,7 @@
                 if (obj.status.phase in ["Error", "Failed", "Cancelled"]) {
                     error(obj.toString())
                 }
-            }
+            }*/
 
             openshift.withProject("cicd") {
                 def jobTemplate = readFile(file:'depcheck_job_scan_maven.yaml')
